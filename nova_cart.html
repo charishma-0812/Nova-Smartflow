@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NOVA SmartFlow — PromptWars Prototype</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;
+    background:#f5f7fb;
+    color:#172033;
+}
+
+button{
+    font:inherit;
+    cursor:pointer;
+    border:0;
+}
+
+.app{
+    min-height:100vh;
+}
+
+/* TOP HEADER */
+.top{
+    height:64px;
+    background:#101a2b;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 22px;
+    position:sticky;
+    top:0;
+    z-index:10;
+}
+
+.logo{
+    font-size:22px;
+    font-weight:800;
+}
+
+.logo span{
+    color:#35c88a;
+}
+
+.top small{
+    opacity:.75;
+}
+
+/* NAVIGATION */
+.nav{
+    display:flex;
+    gap:8px;
+    padding:14px 18px;
+    background:#101a2b;
+    overflow:auto;
+}
+
+.nav button{
+    white-space:nowrap;
+    background:#202c43;
+    color:#cbd4e4;
+    padding:10px 15px;
+    border-radius:12px;
+}
+
+.nav button.active{
+    background:#35b982;
+    color:white;
+}
+
+/* MAIN PAGE */
+.page{
+    max-width:1150px;
+    margin:auto;
+    padding:24px;
+}
+
+.hero{
+    background:linear-gradient(120deg,#e6fff4,#eef2ff);
+    border:1px solid #dce5f0;
+    border-radius:22px;
+    padding:24px;
+    margin-bottom:20px;
+}
+
+.hero h1{
+    margin:0 0 7px;
+    font-size:30px;
+}
+
+.hero p{
+    margin:0;
+    color:#647087;
+}
+
+.screen{
+    display:none;
+}
+
+.screen.active{
+    display:block;
+}
+
+/* CARDS */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+}
+
+.card{
+    background:white;
+    border:1px solid #e4e8ef;
+    border-radius:18px;
+    padding:18px;
+    box-shadow:0 6px 20px #1720330a;
+}
+
+.metric .label{
+    font-size:13px;
+    color:#707b8e;
+}
+
+.metric .value{
+    font-size:28px;
+    font-weight:800;
+    margin:8px 0;
+}
+
+.up{
+    color:#139768;
+}
+
+.down{
+    color:#d45b5b;
+}
+
+.section-title{
+    font-size:21px;
+    margin:25px 0 12px;
+}
+
+/* BUTTONS */
+.actions{
+    display:flex;
+    gap:9px;
+    flex-wrap:wrap;
+}
+
+.primary{
+    background:#149b6d;
+    color:#fff;
+    padding:11px 15px;
+    border-radius:11px;
+}
+
+.secondary{
+    background:#edf2f8;
+    color:#26334a;
+    padding:11px 15px;
+    border-radius:11px;
+}
+
+/* CUSTOMER PHONE */
+.phone{
+    max-width:430px;
+    margin:auto;
+    background:#fff;
+    border:1px solid #dfe5ee;
+    border-radius:28px;
+    padding:18px;
+    box-shadow:0 15px 35px #17203312;
+}
+
+.phonebar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.search{
+    margin:15px 0;
+    background:#f2f5f8;
+    border-radius:12px;
+    padding:12px;
+    color:#778197;
+}
+
+.banner{
+    background:#e6fff3;
+    padding:16px;
+    border-radius:16px;
+    margin-bottom:14px;
+}
+
+.products{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+}
+
+.product{
+    border:1px solid #e6eaf0;
+    border-radius:13px;
+    padding:10px;
+}
+
+.product .emoji{
+    font-size:32px;
+}
+
+.price{
+    font-weight:700;
+}
+
+.product button{
+    margin-top:8px;
+    width:100%;
+    padding:8px;
+    border-radius:8px;
+    background:#149b6d;
+    color:#fff;
+}
+
+/* AI STEPS */
+.steps{
+    display:grid;
+    gap:12px;
+    max-width:720px;
+    margin:auto;
+}
+
+.step{
+    display:flex;
+    gap:14px;
+    align-items:center;
+    background:white;
+    border:1px solid #e2e7ef;
+    border-radius:17px;
+    padding:16px;
+}
+
+.num{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    background:#e8efff;
+    color:#4165c7;
+    font-weight:800;
+}
+
+.check{
+    margin-left:auto;
+    color:#15996c;
+    font-weight:800;
+}
+
+/* ALERTS */
+.alert{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding:16px;
+    border-radius:15px;
+    margin:10px 0;
+}
+
+.alert.high{
+    background:#fff0f0;
+    border:1px solid #ffd2d2;
+}
+
+.alert.warn{
+    background:#fff8e8;
+    border:1px solid #ffe5a8;
+}
+
+.alert.info{
+    background:#edf6ff;
+    border:1px solid #cfe7ff;
+}
+
+/* TOAST MESSAGE */
+.toast{
+    position:fixed;
+    bottom:22px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#172033;
+    color:#fff;
+    padding:13px 18px;
+    border-radius:12px;
+    display:none;
+    z-index:30;
+}
+
+/* MOBILE */
+@media(max-width:800px){
+
+    .grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .page{
+        padding:16px;
+    }
+
+    .hero h1{
+        font-size:25px;
+    }
+}
+
+@media(max-width:480px){
+
+    .grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .products{
+        grid-template-columns:1fr;
+    }
+
+    .top{
+        padding:0 14px;
+    }
+
+    .nav{
+        padding-left:10px;
+    }
+}
+
+/* CART POPUP */
+.cart-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+    padding:20px;
+}
+
+.cart-popup{
+    width:100%;
+    max-width:430px;
+    max-height:80vh;
+    overflow:auto;
+    background:#fff;
+    border-radius:20px;
+    padding:20px;
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+
+.cart-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+}
+
+.cart-header h2{
+    margin:0;
+}
+
+.cart-close{
+    background:#edf2f8;
+    color:#26334a;
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    font-size:20px;
+}
+
+.cart-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:12px 0;
+    border-bottom:1px solid #e6eaf0;
+}
+
+.cart-item-info{
+    flex:1;
+}
+
+.cart-item-name{
+    font-weight:700;
+}
+
+.cart-item-price{
+    color:#647087;
+    font-size:13px;
+    margin-top:4px;
+}
+
+.cart-item-controls{
+    display:flex;
+    align-items:center;
+    gap:9px;
+}
+
+.cart-item-controls button{
+    width:30px;
+    height:30px;
+    border-radius:8px;
+    background:#edf2f8;
+    color:#26334a;
+    font-weight:700;
+}
+
+.cart-total{
+    display:flex;
+    justify-content:space-between;
+    font-size:18px;
+    font-weight:800;
+    padding-top:16px;
+}
+
+.cart-empty{
+    text-align:center;
+    color:#707b8e;
+    padding:25px 0;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- HEADER -->
+<header class="top">
+
+    <div class="logo">
+        NOVA <span>CART</span>
+    </div>
+
+    <small>
+        SmartFlow • Prototype
+    </small>
+
+</header>
+
+
+<!-- NAVIGATION -->
+<nav class="nav">
+
+    <button
+        class="active"
+        onclick="show('customer',this)">
+        🛒 Customer App
+    </button>
+
+    <button
+        onclick="show('ai',this)">
+        🤖 AI Working
+    </button>
+
+    <button
+        onclick="show('business',this)">
+        📊 Business Dashboard
+    </button>
+
+</nav>
+
+
+<main class="page">
+
+
+<!-- ================= CUSTOMER APP ================= -->
+
+<section id="customer" class="screen active">
+
+    <div class="hero">
+
+        <h1>
+            Customer App
+        </h1>
+
+        <p>
+            A simple shopping experience where AI helps
+            customers reorder what they actually need.
+        </p>
+
+    </div>
+
+
+    <div class="phone">
+
+        <div class="phonebar">
+
+            <b style="font-size:22px">
+                NOVA CART
+            </b>
+
+            <span onclick="showCart()" style="cursor:pointer" title="View Cart">
+                🛒
+                <b id="cartCount">0</b>
+            </span>
+
+        </div>
+
+
+        <div class="search">
+            🔍 Search for groceries...
+        </div>
+
+
+        <div class="banner">
+
+            <b>
+                Your next order is a tap away ✨
+            </b>
+
+            <p style="margin:7px 0;color:#536277">
+
+                AI found products you may need again.
+
+            </p>
+
+            <button
+                class="primary"
+                onclick="addRepeat()">
+
+                View Repeat Cart
+
+            </button>
+
+        </div>
+
+
+        <h3>
+            Recommended for you
+        </h3>
+
+
+        <div class="products">
+
+
+            <!-- MILK -->
+
+            <div class="product">
+
+                <div class="emoji">
+                    🥛
+                </div>
+
+                <b>
+                    Milk 1L
+                </b>
+
+                <div class="price">
+                    ₹60
+                </div>
+
+                <div id="product-control-Milk-1L"><button onclick="changeProductQuantity('Milk 1L', 60, 1)">Add</button></div>
+
+            </div>
+
+
+            <!-- BREAD -->
+
+            <div class="product">
+
+                <div class="emoji">
+                    🍞
+                </div>
+
+                <b>
+                    Bread 400g
+                </b>
+
+                <div class="price">
+                    ₹45
+                </div>
+
+                <div id="product-control-Bread-400g"><button onclick="changeProductQuantity('Bread 400g', 45, 1)">Add</button></div>
+
+            </div>
+
+
+            <!-- EGGS -->
+
+            <div class="product">
+
+                <div class="emoji">
+                    🥚
+                </div>
+
+                <b>
+                    Eggs (6 pcs)
+                </b>
+
+                <div class="price">
+                    ₹72
+                </div>
+
+                <div id="product-control-Eggs--6-pcs-"><button onclick="changeProductQuantity('Eggs (6 pcs)', 72, 1)">Add</button></div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= AI WORKING ================= -->
+
+<section id="ai" class="screen">
+
+    <div class="hero">
+
+        <h1>
+            AI Working
+        </h1>
+
+        <p>
+            See what SmartFlow is doing behind the scenes
+            after an order is placed.
+        </p>
+
+    </div>
+
+
+    <div class="steps">
+
+
+        <!-- STEP 1 -->
+
+        <div class="step">
+
+            <div class="num">
+                1
+            </div>
+
+            <div>
+
+                <b>
+                    Checking Inventory
+                </b>
+
+                <div>
+                    Analyzing stock levels and upcoming orders.
+                </div>
+
+            </div>
+
+            <div class="check">
+                ✓
+            </div>
+
+        </div>
+
+
+        <!-- STEP 2 -->
+
+        <div class="step">
+
+            <div class="num">
+                2
+            </div>
+
+            <div>
+
+                <b>
+                    Predicting Demand
+                </b>
+
+                <div>
+                    Estimating what customers will need next.
+                </div>
+
+            </div>
+
+            <div class="check">
+                ✓
+            </div>
+
+        </div>
+
+
+        <!-- STEP 3 -->
+
+        <div class="step">
+
+            <div class="num">
+                3
+            </div>
+
+            <div>
+
+                <b>
+                    Optimizing Delivery
+                </b>
+
+                <div>
+                    Selecting the best hub, rider and route.
+                </div>
+
+            </div>
+
+            <div class="check">
+                ✓
+            </div>
+
+        </div>
+
+
+        <!-- STEP 4 -->
+
+        <div class="step">
+
+            <div class="num">
+                4
+            </div>
+
+            <div>
+
+                <b>
+                    Personalizing the Next Cart
+                </b>
+
+                <div>
+                    Finding useful repeat-purchase suggestions.
+                </div>
+
+            </div>
+
+            <div class="check">
+                ✓
+            </div>
+
+        </div>
+
+
+        <button
+            class="primary"
+            onclick="runAI()">
+
+            ✨ Run SmartFlow AI
+
+        </button>
+
+    </div>
+
+</section>
+
+
+
+<!-- ================= BUSINESS DASHBOARD ================= -->
+
+<section id="business" class="screen">
+
+    <div class="hero">
+
+        <h1>
+            Business Dashboard
+        </h1>
+
+        <p>
+            One control center for growth, cancellations,
+            delivery speed and operational cost.
+        </p>
+
+    </div>
+
+
+    <!-- DASHBOARD METRIC CARDS -->
+
+    <div class="grid">
+
+        <!-- Repeat Purchase Rate -->
+        <div class="card metric">
+
+            <div class="label">
+                Repeat purchase rate
+            </div>
+
+            <div class="value">
+                34.8%
+            </div>
+
+            <div class="up">
+                ▲ 6.2% potential
+            </div>
+
+        </div>
+
+
+        <!-- Cancellation Rate -->
+        <div class="card metric">
+
+            <div class="label">
+                Cancellation rate
+            </div>
+
+            <div class="value">
+                4.1%
+            </div>
+
+            <div class="down">
+                ▼ 1.8% projected
+            </div>
+
+        </div>
+
+
+        <!-- Average Delivery Time -->
+        <div class="card metric">
+
+            <div class="label">
+                Avg. delivery time
+            </div>
+
+            <div class="value">
+                18.6 min
+            </div>
+
+            <div class="down">
+                ▼ 4.7 min projected
+            </div>
+
+        </div>
+
+
+        <!-- Cost Per Order -->
+        <div class="card metric">
+
+            <div class="label">
+                Cost / order
+            </div>
+
+            <div class="value">
+                ₹42.70
+            </div>
+
+            <div class="down">
+                ▼ ₹6.30 projected
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<div id="cartOverlay" class="cart-overlay" onclick="closeCart(event)">
+    <section class="cart-popup" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+        <div class="cart-header">
+            <h2 id="cartTitle">Your Cart</h2>
+            <button class="cart-close" type="button" onclick="closeCart()" aria-label="Close cart">&times;</button>
+        </div>
+        <div id="cartItems"></div>
+        <div class="cart-total">
+            <span>Total</span>
+            <span id="cartTotal">₹0</span>
+        </div>
+    </section>
+</div>
+
+<script>
+
+function show(screenId, button) {
+
+    document.querySelectorAll(".screen").forEach(function(screen) {
+        screen.classList.remove("active");
+    });
+
+    document.getElementById(screenId).classList.add("active");
+
+    document.querySelectorAll(".nav button").forEach(function(btn) {
+        btn.classList.remove("active");
+    });
+
+    button.classList.add("active");
+}
+
+function addRepeat() {
+    alert("Your repeat cart has been prepared! 🛒");
+}
+
+function runAI() {
+    alert("SmartFlow AI is running 🤖");
+}
+
+
+
+let cart = {};
+
+function updateCartCount() {
+    const count = Object.values(cart).reduce((total, item) => total + item.quantity, 0);
+    const cartCount = document.getElementById("cartCount");
+    if (cartCount) cartCount.innerText = count;
+}
+
+function updateCartDisplay() {
+    const container = document.getElementById("cartItems");
+    const totalElement = document.getElementById("cartTotal");
+
+    if (!container || !totalElement) return;
+
+    const items = Object.entries(cart);
+
+    if (items.length === 0) {
+        container.innerHTML = '<div class="cart-empty">Your cart is empty.</div>';
+        totalElement.innerText = "₹0";
+        return;
+    }
+
+    let total = 0;
+
+    container.innerHTML = items.map(function([name, item]) {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+
+        return `
+            <div class="cart-item">
+                <div class="cart-item-info">
+                    <div class="cart-item-name">${name}</div>
+                    <div class="cart-item-price">₹${item.price} each</div>
+                </div>
+
+                <div class="cart-item-controls">
+                    <button onclick="changeProductQuantity('${name}', ${item.price}, -1)">−</button>
+                    <b>${item.quantity}</b>
+                    <button onclick="changeProductQuantity('${name}', ${item.price}, 1)">+</button>
+                </div>
+            </div>
+        `;
+    }).join("");
+
+    totalElement.innerText = "₹" + total;
+}
+
+function showCart() {
+    updateCartDisplay();
+    const overlay = document.getElementById("cartOverlay");
+    if (overlay) overlay.style.display = "flex";
+}
+
+function closeCart(event) {
+    if (event && event.target !== event.currentTarget) return;
+
+    const overlay = document.getElementById("cartOverlay");
+    if (overlay) overlay.style.display = "none";
+}
+
+function changeProductQuantity(name, price, change) {
+    if (!cart[name]) {
+        if (change <= 0) return;
+        cart[name] = { price: price, quantity: 0 };
+    }
+
+    cart[name].quantity += change;
+
+    if (cart[name].quantity <= 0) {
+        delete cart[name];
+    }
+
+    updateCartCount();
+    updateCartDisplay();
+    updateRecommendedQuantities();
+}
+
+function renderProductControl(name, price) {
+    const id = 'product-control-' + name.replace(/[^a-zA-Z0-9]/g, '-');
+    const item = cart[name];
+    const qty = item ? item.quantity : 0;
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    if (qty === 0) {
+        el.innerHTML = `<button onclick="changeProductQuantity('${name}', ${price}, 1)">Add</button>`;
+    } else {
+        el.innerHTML = `
+            <div class="product-quantity-control">
+                <button class="qty-btn" onclick="changeProductQuantity('${name}', ${price}, -1)">−</button>
+                <span class="product-qty">${qty}</span>
+                <button class="qty-btn" onclick="changeProductQuantity('${name}', ${price}, 1)">+</button>
+            </div>`;
+    }
+}
+
+function updateRecommendedQuantities() {
+    renderProductControl('Milk 1L', 60);
+    renderProductControl('Bread 400g', 45);
+    renderProductControl('Eggs (6 pcs)', 72);
+}
+
+
+updateRecommendedQuantities();
+updateCartDisplay();
+</script>
+
+</body>
+</html>
